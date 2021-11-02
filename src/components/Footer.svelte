@@ -5,7 +5,7 @@
     let email = "mailto:gireesh.developer@gmail.com";
     let resume =
         "https://docs.google.com/document/d/1lNpJxeKUlJd3WqyPxQOU4cqU2lBtyA0hLdCtH71rDU4/edit?usp=sharing";
-    let linkedin = "https://linkedin.com/GireeshYejju";
+    let linkedin = "https://linkedin.com/in/GireeshYejju";
     let twitter = "https://twitter.com/GireeshYejju";
 </script>
 
