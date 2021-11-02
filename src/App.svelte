@@ -32,7 +32,7 @@
 </MediaQuery>
 
 <style>
-	span {
+	/* span {
 		width: 100%;
 		display: flex;
 		align-items: center;
@@ -41,7 +41,7 @@
 
 	span > * {
 		flex: 1 1 0;
-	}
+	} */
 
 	main {
 		padding-bottom: 64px;

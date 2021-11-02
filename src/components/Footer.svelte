@@ -1,36 +1,34 @@
 <script>
     export let isMobile;
     let year = new Date().getFullYear();
+
+    let email = "mailto:gireesh.developer@gmail.com";
+    let resume =
+        "https://docs.google.com/document/d/1lNpJxeKUlJd3WqyPxQOU4cqU2lBtyA0hLdCtH71rDU4/edit?usp=sharing";
+    let linkedin = "https://linkedin.com/GireeshYejju";
+    let twitter = "https://twitter.com/GireeshYejju";
 </script>
 
 <footer>
     {#if !isMobile}
         <div id="footer-row" style="padding-bottom: 24px;">
             <div />
-            <a target="_blank" href="mailto:gireesh.developer@gmail.com"
-                >Email</a
-            >
-            <a target="_blank" href="https://google.com">Resume</a>
+            <a target="_blank" href={email}>Email</a>
+            <a target="_blank" href={resume}>Resume</a>
             <p id="copyright">
                 Copyright © {year} Gireesh Yejju. All Rights Reserved.
             </p>
-            <a target="_blank" href="https://linkedin.com/">LinkedIn</a>
-            <a target="_blank" href="https://twitter.com/GireeshYejju"
-                >Twitter</a
-            >
+            <a target="_blank" href={linkedin}>LinkedIn</a>
+            <a target="_blank" href={twitter}>Twitter</a>
             <div />
         </div>
     {/if}
     {#if isMobile}
         <div id="footer-row" style="padding-bottom: 10px;">
-            <a target="_blank" href="mailto:gireesh.developer@gmail.com"
-                >Email</a
-            >
-            <a target="_blank" href="https://google.com">Resume</a>
-            <a target="_blank" href="https://linkedin.com/">LinkedIn</a>
-            <a target="_blank" href="https://twitter.com/GireeshYejju"
-                >Twitter</a
-            >
+            <a target="_blank" href={email}>Email</a>
+            <a target="_blank" href={resume}>Resume</a>
+            <a target="_blank" href={linkedin}>LinkedIn</a>
+            <a target="_blank" href={twitter}>Twitter</a>
         </div>
         <div id="footer-copyright-section">
             <p id="copyright">
