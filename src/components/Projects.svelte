@@ -171,7 +171,12 @@
 
     @media (prefers-color-scheme: dark) {
         .project-card {
-            border: white;
+            border-color: #FCFCFC;
+            
+        }
+        .no-underline > .title,
+        .description {
+            color: #FCFCFC;
         }
     }
 </style>

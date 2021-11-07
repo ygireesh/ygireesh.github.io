@@ -4,7 +4,7 @@
 
     let email = "mailto:gireesh.developer@gmail.com";
     let resume =
-        "https://drive.google.com/file/d/1N6hLHPSpGEgfUQ1SBCSkrRZMsOShXYGB/view?usp=sharing";
+        "https://drive.google.com/file/d/1RF_TYT1L3Fq5MKMtDafNmShwrGnICZTB/view";
     let linkedin = "https://linkedin.com/in/GireeshYejju";
     let twitter = "https://twitter.com/GireeshYejju";
 </script>
