@@ -41,7 +41,13 @@
     {#each projects as project, index}
         <a href="/#" on:click={() => selectProject(index)}>
             <div class="project-card">
-                <img src="/images/project-{index}.png" alt="" {width} {height} style="object-fit: cover"/>
+                <img
+                    src="/images/project-{index}.png"
+                    alt=""
+                    {width}
+                    {height}
+                    style="object-fit: cover"
+                />
                 <div class="no-underline">
                     <p class="title">{project["title"]}</p>
                     <p class="description">{project["description"]}</p>
@@ -92,9 +98,7 @@
     }
 
     .project-card {
-        border: white;
-        border-style: solid;
-        border-width: 1px;
+        border: #626262 solid 1px;
     }
 
     .project-card:hover {
@@ -105,6 +109,11 @@
     .description {
         text-decoration: none;
         margin: 6px;
+        color: #626262;
+    }
+
+    .no-underline > .title {
+        font-size: 24px;
     }
 
     .no-underline > .description {
@@ -157,6 +166,12 @@
 
         #close-button {
             font-size: 14px;
+        }
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .project-card {
+            border: white;
         }
     }
 </style>
