@@ -96,6 +96,12 @@ var app = (function () {
     function detach(node) {
         node.parentNode.removeChild(node);
     }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
     function element(name) {
         return document.createElement(name);
     }
@@ -107,6 +113,10 @@ var app = (function () {
     }
     function empty() {
         return text('');
+    }
+    function listen(node, event, handler, options) {
+        node.addEventListener(event, handler, options);
+        return () => node.removeEventListener(event, handler, options);
     }
     function attr(node, attribute, value) {
         if (value == null)
@@ -383,12 +393,34 @@ var app = (function () {
         dispatch_dev('SvelteDOMRemove', { node });
         detach(node);
     }
+    function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
+        const modifiers = options === true ? ['capture'] : options ? Array.from(Object.keys(options)) : [];
+        if (has_prevent_default)
+            modifiers.push('preventDefault');
+        if (has_stop_propagation)
+            modifiers.push('stopPropagation');
+        dispatch_dev('SvelteDOMAddEventListener', { node, event, handler, modifiers });
+        const dispose = listen(node, event, handler, options);
+        return () => {
+            dispatch_dev('SvelteDOMRemoveEventListener', { node, event, handler, modifiers });
+            dispose();
+        };
+    }
     function attr_dev(node, attribute, value) {
         attr(node, attribute, value);
         if (value == null)
             dispatch_dev('SvelteDOMRemoveAttribute', { node, attribute });
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
+    }
+    function validate_each_argument(arg) {
+        if (typeof arg !== 'string' && !(arg && typeof arg === 'object' && 'length' in arg)) {
+            let msg = '{#each} only iterates over array-like objects.';
+            if (typeof Symbol === 'function' && arg && Symbol.iterator in arg) {
+                msg += ' You can use a spread to convert this iterable into an array.';
+            }
+            throw new Error(msg);
+        }
     }
     function validate_slots(name, slot, keys) {
         for (const slot_key of Object.keys(slot)) {
@@ -1025,44 +1057,222 @@ var app = (function () {
 
     const file$1 = "src\\components\\Projects.svelte";
 
-    function create_fragment$1(ctx) {
-    	let div;
-    	let h4;
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[8] = list[i];
+    	child_ctx[10] = i;
+    	return child_ctx;
+    }
+
+    // (41:4) {#each projects as project, index}
+    function create_each_block(ctx) {
+    	let a;
+    	let div1;
+    	let img;
+    	let img_src_value;
+    	let t0;
+    	let div0;
+    	let p0;
+    	let t1_value = /*project*/ ctx[8]["title"] + "";
     	let t1;
-    	let iframe;
-    	let iframe_src_value;
+    	let t2;
+    	let p1;
+    	let t3_value = /*project*/ ctx[8]["description"] + "";
+    	let t3;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[5](/*index*/ ctx[10]);
+    	}
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			a = element("a");
+    			div1 = element("div");
+    			img = element("img");
+    			t0 = space();
+    			div0 = element("div");
+    			p0 = element("p");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			p1 = element("p");
+    			t3 = text(t3_value);
+    			if (!src_url_equal(img.src, img_src_value = "/images/project-" + /*index*/ ctx[10] + ".png")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "");
+    			attr_dev(img, "width", /*width*/ ctx[0]);
+    			attr_dev(img, "height", /*height*/ ctx[1]);
+    			set_style(img, "object-fit", "cover");
+    			add_location(img, file$1, 43, 16, 1183);
+    			attr_dev(p0, "class", "title svelte-1n3315n");
+    			add_location(p0, file$1, 45, 20, 1339);
+    			attr_dev(p1, "class", "description svelte-1n3315n");
+    			add_location(p1, file$1, 46, 20, 1400);
+    			attr_dev(div0, "class", "no-underline svelte-1n3315n");
+    			add_location(div0, file$1, 44, 16, 1291);
+    			attr_dev(div1, "class", "project-card svelte-1n3315n");
+    			add_location(div1, file$1, 42, 12, 1139);
+    			attr_dev(a, "href", "/#");
+    			attr_dev(a, "class", "svelte-1n3315n");
+    			add_location(a, file$1, 41, 8, 1074);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, a, anchor);
+    			append_dev(a, div1);
+    			append_dev(div1, img);
+    			append_dev(div1, t0);
+    			append_dev(div1, div0);
+    			append_dev(div0, p0);
+    			append_dev(p0, t1);
+    			append_dev(div0, t2);
+    			append_dev(div0, p1);
+    			append_dev(p1, t3);
+
+    			if (!mounted) {
+    				dispose = listen_dev(a, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*width*/ 1) {
+    				attr_dev(img, "width", /*width*/ ctx[0]);
+    			}
+
+    			if (dirty & /*height*/ 2) {
+    				attr_dev(img, "height", /*height*/ ctx[1]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(a);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(41:4) {#each projects as project, index}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$1(ctx) {
+    	let div1;
+    	let h4;
+    	let t1;
+    	let t2;
+    	let div0;
+    	let iframe;
+    	let iframe_src_value;
+    	let t3;
+    	let a;
+    	let mounted;
+    	let dispose;
+    	let each_value = /*projects*/ ctx[3];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div1 = element("div");
     			h4 = element("h4");
     			h4.textContent = "UX PROJECTS";
     			t1 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t2 = space();
+    			div0 = element("div");
     			iframe = element("iframe");
-    			attr_dev(h4, "class", "svelte-1m5xix1");
-    			add_location(h4, file$1, 23, 4, 463);
-    			attr_dev(iframe, "title", "case-study");
-    			if (!src_url_equal(iframe.src, iframe_src_value = "https://docs.google.com/presentation/d/e/2PACX-1vRtAf8i36sKuyz17zrrmAzxxJw6tCG_H9D9HgDRPQm-PhKml5pcVtWYDzYRYTNyFQ/embed?start=true&loop=true&delayms=60000")) attr_dev(iframe, "src", iframe_src_value);
+    			t3 = space();
+    			a = element("a");
+    			a.textContent = "Close";
+    			attr_dev(h4, "class", "svelte-1n3315n");
+    			add_location(h4, file$1, 39, 4, 1004);
+    			attr_dev(iframe, "title", "case-study-1");
+    			if (!src_url_equal(iframe.src, iframe_src_value = "https://docs.google.com/presentation/d/e/" + /*projects*/ ctx[3][/*currentProject*/ ctx[2]]['slug'] + "/embed?start=false&loop=true&delayms=60000")) attr_dev(iframe, "src", iframe_src_value);
     			attr_dev(iframe, "frameborder", "0");
     			attr_dev(iframe, "width", /*width*/ ctx[0]);
     			attr_dev(iframe, "height", /*height*/ ctx[1]);
     			iframe.allowFullscreen = "true";
     			attr_dev(iframe, "mozallowfullscreen", "true");
     			attr_dev(iframe, "webkitallowfullscreen", "true");
-    			add_location(iframe, file$1, 24, 4, 489);
-    			attr_dev(div, "class", "svelte-1m5xix1");
-    			add_location(div, file$1, 22, 0, 452);
+    			add_location(iframe, file$1, 53, 8, 1586);
+    			attr_dev(a, "href", "/#");
+    			attr_dev(a, "id", "close-button");
+    			attr_dev(a, "class", "svelte-1n3315n");
+    			add_location(a, file$1, 65, 8, 2007);
+    			attr_dev(div0, "id", "overlay");
+    			set_style(div0, "visibility", "hidden");
+    			attr_dev(div0, "class", "svelte-1n3315n");
+    			add_location(div0, file$1, 52, 4, 1530);
+    			attr_dev(div1, "class", "svelte-1n3315n");
+    			add_location(div1, file$1, 38, 0, 993);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, h4);
-    			append_dev(div, t1);
-    			append_dev(div, iframe);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, h4);
+    			append_dev(div1, t1);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div1, null);
+    			}
+
+    			append_dev(div1, t2);
+    			append_dev(div1, div0);
+    			append_dev(div0, iframe);
+    			append_dev(div0, t3);
+    			append_dev(div0, a);
+
+    			if (!mounted) {
+    				dispose = listen_dev(a, "click", /*click_handler_1*/ ctx[6], false, false, false);
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, [dirty]) {
+    			if (dirty & /*selectProject, projects, width, height*/ 27) {
+    				each_value = /*projects*/ ctx[3];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div1, t2);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*currentProject*/ 4 && !src_url_equal(iframe.src, iframe_src_value = "https://docs.google.com/presentation/d/e/" + /*projects*/ ctx[3][/*currentProject*/ ctx[2]]['slug'] + "/embed?start=false&loop=true&delayms=60000")) {
+    				attr_dev(iframe, "src", iframe_src_value);
+    			}
+
     			if (dirty & /*width*/ 1) {
     				attr_dev(iframe, "width", /*width*/ ctx[0]);
     			}
@@ -1074,7 +1284,10 @@ var app = (function () {
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div1);
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -1087,6 +1300,10 @@ var app = (function () {
     	});
 
     	return block;
+    }
+
+    function closeProjectView() {
+    	document.getElementById("overlay").style.visibility = "hidden";
     }
 
     function instance$1($$self, $$props, $$invalidate) {
@@ -1104,25 +1321,66 @@ var app = (function () {
     		width = 960;
     	}
 
+    	var projects = [
+    		{
+    			slug: "2PACX-1vRtAf8i36sKuyz17zrrmAzxxJw6tCG_H9D9HgDRPQm-PhKml5pcVtWYDzYRYTNyFQ",
+    			title: "PADDHU",
+    			description: "FINANCIAL TRACKING APP"
+    		},
+    		{
+    			slug: "2PACX-1vR28BUcgixaCWK1ctgWsb_8YAzqVrXKNWBb_mcEgi1uqbv0BRS8JrCPefGSmqPa6g",
+    			title: "CACHE HO",
+    			description: "BRANDING KIT"
+    		}
+    	];
+
+    	var currentProject = 0;
+
+    	function selectProject(project_id) {
+    		$$invalidate(2, currentProject = project_id);
+    		document.getElementById("overlay").style.visibility = "visible";
+    	}
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Projects> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ ratio, width, height });
+    	const click_handler = index => selectProject(index);
+    	const click_handler_1 = () => closeProjectView();
+
+    	$$self.$capture_state = () => ({
+    		ratio,
+    		width,
+    		height,
+    		projects,
+    		currentProject,
+    		selectProject,
+    		closeProjectView
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ('ratio' in $$props) ratio = $$props.ratio;
     		if ('width' in $$props) $$invalidate(0, width = $$props.width);
     		if ('height' in $$props) $$invalidate(1, height = $$props.height);
+    		if ('projects' in $$props) $$invalidate(3, projects = $$props.projects);
+    		if ('currentProject' in $$props) $$invalidate(2, currentProject = $$props.currentProject);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [width, height];
+    	return [
+    		width,
+    		height,
+    		currentProject,
+    		projects,
+    		selectProject,
+    		click_handler,
+    		click_handler_1
+    	];
     }
 
     class Projects extends SvelteComponentDev {
